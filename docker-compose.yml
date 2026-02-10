@@ -1,0 +1,9 @@
+services:
+  ex-track:
+    build: .
+    container_name: ex-track
+    restart: unless-stopped
+    env_file:
+      - .env
+    environment:
+      - NODE_ENV=production
