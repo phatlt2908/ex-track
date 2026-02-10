@@ -68,7 +68,7 @@ export function startBot() {
         message_id: statusMsg.message_id,
       });
     } catch (err) {
-      logger.error('Error processing message:', err.message);
+      logger.error('Error processing message:', err.message, err);
       await bot.editMessageText(`Lỗi: ${err.message}`, {
         chat_id: msg.chat.id,
         message_id: statusMsg.message_id,
