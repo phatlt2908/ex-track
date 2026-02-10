@@ -62,12 +62,9 @@ export async function recordExpense(expenses) {
     }
   }
 
-  const day = new Date().getDate();
-  const rowIndex = day + 1; // row 0 = header, row 1 = extra row, row 2 = day 1, etc.
-
-  // Find all columns we need to update
-  const columnsToUpdate = new Set();
+  // Group expenses by date to batch cell loading
   const errors = [];
+  const valid = [];
 
   for (const expense of expenses) {
     const colIndex = categoryMap[expense.category];
@@ -77,43 +74,46 @@ export async function recordExpense(expenses) {
       );
       continue;
     }
-    columnsToUpdate.add(colIndex);
+    // Parse date "DD/MM/YYYY" to get day
+    const [dayStr] = expense.date.split('/');
+    const day = parseInt(dayStr, 10);
+    if (isNaN(day) || day < 1 || day > 31) {
+      errors.push(`Ngày không hợp lệ: "${expense.date}" cho "${expense.description}"`);
+      continue;
+    }
+    valid.push({ ...expense, colIndex, day, rowIndex: day + 1 });
   }
 
-  if (errors.length > 0 && columnsToUpdate.size === 0) {
+  if (valid.length === 0 && errors.length > 0) {
     throw new Error(errors.join('\n'));
   }
 
-  // Load the target row cells
-  const minCol = Math.min(...columnsToUpdate);
-  const maxCol = Math.max(...columnsToUpdate);
+  // Load all needed cells (may span multiple rows)
+  const minRow = Math.min(...valid.map((e) => e.rowIndex));
+  const maxRow = Math.max(...valid.map((e) => e.rowIndex));
+  const minCol = Math.min(...valid.map((e) => e.colIndex));
+  const maxCol = Math.max(...valid.map((e) => e.colIndex));
   await sheet.loadCells({
-    startRowIndex: rowIndex,
-    endRowIndex: rowIndex + 1,
+    startRowIndex: minRow,
+    endRowIndex: maxRow + 1,
     startColumnIndex: minCol,
     endColumnIndex: maxCol + 1,
   });
 
   const recorded = [];
 
-  for (const expense of expenses) {
-    const colIndex = categoryMap[expense.category];
-    if (colIndex === undefined) continue;
-
-    const cell = sheet.getCell(rowIndex, colIndex);
+  for (const expense of valid) {
+    const cell = sheet.getCell(expense.rowIndex, expense.colIndex);
     const amount = expense.amount;
     const description = expense.description;
 
     if (cell.value === null || cell.value === '') {
-      // Empty cell
       cell.value = amount;
       cell.note = description;
     } else if (cell.formula) {
-      // Cell has formula: append + newAmount
       cell.formula = `${cell.formula} + ${amount}`;
       cell.note = cell.note ? `${cell.note}, ${description}` : description;
     } else {
-      // Cell has a plain number: convert to formula
       cell.formula = `= ${cell.value} + ${amount}`;
       cell.note = cell.note ? `${cell.note}, ${description}` : description;
     }

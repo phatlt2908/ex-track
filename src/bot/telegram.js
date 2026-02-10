@@ -9,11 +9,10 @@ function formatAmount(amount) {
 }
 
 function buildConfirmation(recorded) {
-  const day = new Date().getDate();
   const lines = recorded.map(
-    (e) => `• ${e.description} - ${formatAmount(e.amount)} | ${e.category}`
+    (e) => `• ${e.description} - ${formatAmount(e.amount)} | ${e.category} | ${e.date}`
   );
-  return `Đã ghi (ngày ${day}):\n${lines.join('\n')}`;
+  return `Đã ghi:\n${lines.join('\n')}`;
 }
 
 export function startBot() {
