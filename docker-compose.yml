@@ -3,6 +3,8 @@ services:
     build: .
     container_name: ex-track
     restart: unless-stopped
+    ports:
+      - "4500:4500"
     env_file:
       - .env
     environment:

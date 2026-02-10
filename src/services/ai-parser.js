@@ -35,7 +35,7 @@ Danh sách category có sẵn: ${categories.join(', ')}
 
 Ví dụ:
 - "ăn phở 50k" → [{description: "ăn phở", amount: 50000, category: "Ăn uống"}]
-- "grab 25k, cà phê 30k" → [{description: "grab", amount: 25000, category: "Di chuyển"}, {description: "cà phê", amount: 30000, category: "Ăn uống"}]`;
+- "grab 25k, cà phê 30k" → [{description: "grab", amount: 25000, category: "Đi lại"}, {description: "cà phê", amount: 30000, category: "Ăn uống"}]`;
 }
 
 const jsonSchema = {
