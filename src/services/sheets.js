@@ -63,7 +63,7 @@ export async function recordExpense(expenses) {
   }
 
   const day = new Date().getDate();
-  const rowIndex = day; // row 0 = header, row 1 = day 1, etc.
+  const rowIndex = day + 1; // row 0 = header, row 1 = extra row, row 2 = day 1, etc.
 
   // Find all columns we need to update
   const columnsToUpdate = new Set();
