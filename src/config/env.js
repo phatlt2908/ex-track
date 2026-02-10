@@ -3,7 +3,6 @@ const required = [
   'OPENROUTER_API_KEY',
   'GOOGLE_SERVICE_ACCOUNT_EMAIL',
   'GOOGLE_PRIVATE_KEY',
-  'ALLOWED_TELEGRAM_USER_ID',
 ];
 
 for (const key of required) {
@@ -26,7 +25,6 @@ export const config = {
   openrouterModel: process.env.OPENROUTER_MODEL || 'google/gemini-2.0-flash-001',
   googleServiceAccountEmail: process.env.GOOGLE_SERVICE_ACCOUNT_EMAIL,
   googlePrivateKey: process.env.GOOGLE_PRIVATE_KEY.replace(/\\n/g, '\n'),
-  allowedUserId: Number(process.env.ALLOWED_TELEGRAM_USER_ID),
   getSpreadsheetId(year) {
     const id = process.env[`GOOGLE_SPREADSHEET_ID_${year}`];
     if (!id) throw new Error(`Missing env var: GOOGLE_SPREADSHEET_ID_${year}`);

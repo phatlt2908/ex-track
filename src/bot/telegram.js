@@ -21,7 +21,6 @@ export function startBot() {
   logger.info('Telegram bot started (long polling)');
 
   bot.onText(/\/start/, (msg) => {
-    if (msg.from.id !== config.allowedUserId) return;
     bot.sendMessage(
       msg.chat.id,
       'Chào! Gửi tin nhắn chi tiêu để ghi vào sheet.\nVí dụ: "ăn phở 50k" hoặc "grab 25k, cà phê 30k"\n\nGõ /help để xem hướng dẫn.'
@@ -29,7 +28,6 @@ export function startBot() {
   });
 
   bot.onText(/\/help/, (msg) => {
-    if (msg.from.id !== config.allowedUserId) return;
     bot.sendMessage(
       msg.chat.id,
       [
@@ -48,12 +46,6 @@ export function startBot() {
 
     // Ignore commands (handled by onText above)
     if (msg.text.startsWith('/')) return;
-
-    // Auth check
-    if (msg.from.id !== config.allowedUserId) {
-      logger.warn(`Unauthorized user: ${msg.from.id}`);
-      return;
-    }
 
     const statusMsg = await bot.sendMessage(msg.chat.id, 'Đang xử lý...');
 
