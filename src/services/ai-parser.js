@@ -90,6 +90,7 @@ export async function parseExpense(text) {
   }
 
   const data = await response.json();
+  logger.info(`OpenRouter response: model=${data.model}, usage=${JSON.stringify(data.usage)}`);
   const content = data.choices?.[0]?.message?.content;
 
   if (!content) {
