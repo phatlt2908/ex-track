@@ -76,7 +76,7 @@ export function startBot() {
   });
 
   bot.on('polling_error', (err) => {
-    logger.error('Polling error:', err.message);
+    logger.error('Polling error:', err.message, err);
   });
 
   return bot;
